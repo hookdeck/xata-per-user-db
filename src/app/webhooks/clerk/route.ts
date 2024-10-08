@@ -31,6 +31,14 @@ export async function POST(request: NextRequest) {
 
     console.log("Existing DB list", dbList);
 
+    if (dbList.databases.find((db) => db.name === event.data.id)) {
+      const msg = "User DB already exists";
+      console.log(msg, event.data.id);
+
+      // Return 200 as we've processed the event and we don't want Hookdeck to retry
+      return NextResponse.json({ message: msg }, { status: 200 });
+    }
+
     const createResult = await xata.databases.createDatabase({
       pathParams: {
         dbName: event.data.id,
