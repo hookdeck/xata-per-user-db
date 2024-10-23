@@ -59,6 +59,8 @@ And login:
 hookdeck login
 ```
 
+TODO: ...
+
 ### Scaffold a Next.js app
 
 Run the following and accept all defaults:
@@ -107,7 +109,7 @@ export const config = {
 };
 ```
 
-Update `layout.tsx`:
+Update `layout.tsx` to the following:
 
 ```tsx
 import {
@@ -144,7 +146,9 @@ export default function RootLayout({
 }
 ```
 
-Add the following to `global.css`:
+This adds the Clerk provided sign in and sign out functionality.
+
+Add the following to `global.css` to improve the button styling a little:
 
 ```sh
 header {
@@ -163,8 +167,6 @@ header button {
 }
 ```
 
-TODO: code walkthrough
-
 #### Test the Next.js application
 
 Run the application:
@@ -174,6 +176,8 @@ npm run dev
 ```
 
 Head to localhost:3000 and click on the **Sign In** and ensure you go to the Clerk sign in modal appears. **Don't complete the sign in / sign up flow yet!**
+
+TODO: screenshot
 
 #### Add the Clerk webhook route
 
@@ -253,7 +257,7 @@ clerk -> clerk_to_cli-clerk forwarding to /webhooks/clerk
 > Ready! (^C to quit)
 ```
 
-Copy the URL that is output.
+Copy the **clerk URL** value that is output.
 
 #### Configure Clerk webhooks
 
@@ -262,6 +266,8 @@ Head to the Clerk Dashboard and go to the Webhooks section.
 Click **+ Add Endpoint** and enter the Hookdeck URL you copied in the previous step. Click **Create**.
 
 TODO: get webhook secret and configure Hookdeck to sign the webhook
+
+![Svix webhook verification for Clerk within the Hookdeck dashboard](./hookdeck-svix-verification.png)
 
 Head back to your application and complete the sign up / sign in flow.
 
