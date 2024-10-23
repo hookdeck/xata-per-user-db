@@ -10,17 +10,17 @@ As mentioned, a per-user database architecture is often required to guarantee da
 
 Here are some concrete examples of where a per-user or per-device database makes sense:
 
-**Software as a Service (SaaS) Platforms**: Each client or user can have their own database to ensure data isolation and security. This setup is advantageous for businesses like Fogbugz, which uses a database per-customer model to manage isolated customer data efficiently.
+- **Software as a Service (SaaS) Platforms**: Each client or user can have their own database to ensure data isolation and security. This setup is advantageous for businesses like Fogbugz, which uses a database per-customer model to manage isolated customer data efficiently.
 
-**Healthcare Systems**: Per-user databases can securely store sensitive patient data, ensuring compliance with privacy regulations like HIPAA. This approach allows for personalized care and easy retrieval of patient records.
+- **Healthcare Systems**: Per-user databases can securely store sensitive patient data, ensuring compliance with privacy regulations like HIPAA. This approach allows for personalized care and easy retrieval of patient records.
 
-**Financial Services**: Online banking and fintech platforms can benefit from per-user databases by securely managing individual financial data. This setup enhances security and simplifies the process of auditing and compliance
+- **Financial Services**: Online banking and fintech platforms can benefit from per-user databases by securely managing individual financial data. This setup enhances security and simplifies the process of auditing and compliance
 
-**E-commerce Platforms**: Each customer can have a separate database to manage their order history, preferences, and personal information. This helps in providing personalized shopping experiences and targeted marketing.
+- **E-commerce Platforms**: Each customer can have a separate database to manage their order history, preferences, and personal information. This helps in providing personalized shopping experiences and targeted marketing.
 
-**Social Media Applications**: Per-user databases can handle vast amounts of unstructured data, such as posts and interactions, while maintaining user privacy and providing personalized content feeds.
+- **Social Media Applications**: Per-user databases can handle vast amounts of unstructured data, such as posts and interactions, while maintaining user privacy and providing personalized content feeds.
 
-**IoT Applications**: Per-device databases can manage data from individual sensors or devices, allowing for real-time analytics and efficient data processing.
+- **IoT Applications**: Per-device databases can manage data from individual sensors or devices, allowing for real-time analytics and efficient data processing.
 
 ## Build a per-user database architecture with Xata, Clerk, and Hookdeck
 
