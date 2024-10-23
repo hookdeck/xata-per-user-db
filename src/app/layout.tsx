@@ -1,14 +1,26 @@
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import './globals.css'
+import {
+  ClerkProvider,
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
+import "./globals.css";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <ClerkProvider>
       <html lang="en">
         <body>
           <header>
             <SignedOut>
-              <SignInButton />
+              <SignInButton mode="modal" />
+              <SignUpButton mode="modal" />
             </SignedOut>
             <SignedIn>
               <UserButton />
@@ -18,5 +30,5 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </body>
       </html>
     </ClerkProvider>
-  )
+  );
 }

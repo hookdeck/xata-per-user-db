@@ -27,6 +27,9 @@ body {
 header {
   text-align: center;
   margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
 }
 
 header button {
