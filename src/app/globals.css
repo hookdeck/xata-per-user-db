@@ -39,7 +39,13 @@ header button {
   border: 1px solid transparent;
   cursor: pointer;
   font-size: 16px;
-  line-height: 20px;
+  background: var(--background);
+  border-color: var(--gray-alpha-200);
+}
+
+header button:last-of-type {
+  background: var(--foreground);
+  color: var(--background);
 }
 
 * {

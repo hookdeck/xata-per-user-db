@@ -75,7 +75,7 @@ Go to the [Hookdeck Dashboard](https://dashboard.hookdeck.com) -> Settings -> Se
 
 ### Xata
 
-From your workspace settings get your API Key and Workspace slug/ID, and save those in `XATA_API_KEY` and `XATA_WORKSPACE_ID` in your `.env.local` file.
+From your workspace settings get your API Key and Workspace slug/ID, and save those in `XATA_API_KEY` and `XATA_WORKSPACE_SLUG` in your `.env.local` file.
 
 ### Run the setup script
 

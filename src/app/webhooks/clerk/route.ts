@@ -10,15 +10,15 @@ if (!HOOKDECK_WEBHOOK_SECRET) {
 }
 
 const XATA_API_KEY = process.env.XATA_API_KEY;
-const XATA_WORKSPACE_ID = process.env.XATA_WORKSPACE_ID;
+const XATA_WORKSPACE_SLUG = process.env.XATA_WORKSPACE_SLUG;
 
 if (!XATA_API_KEY) {
   console.error("Please set XATA_API_KEY environment variable");
   process.exit(1);
 }
 
-if (!XATA_WORKSPACE_ID) {
-  console.error("Please set XATA_WORKSPACE_ID environment variable");
+if (!XATA_WORKSPACE_SLUG) {
+  console.error("Please set XATA_WORKSPACE_SLUG environment variable");
   process.exit(1);
 }
 
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
     const dbList = await xata.databases.getDatabaseList({
       pathParams: {
-        workspaceId: XATA_WORKSPACE_ID!,
+        workspaceId: XATA_WORKSPACE_SLUG!,
       },
     });
 
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       const msg = "User DB already exists";
       console.log(`${msg}:`, event.data.id);
 
-      // Return 200 as we've processed the event and we don't want Hookdeck to retry
+      // Return 200 as the event is processed and we don't want Hookdeck to retry
       return NextResponse.json({ message: msg }, { status: 200 });
     }
 
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
     const createResult = await xata.databases.createDatabase({
       pathParams: {
         dbName: event.data.id,
-        workspaceId: XATA_WORKSPACE_ID!,
+        workspaceId: XATA_WORKSPACE_SLUG!,
       },
       body: {
         region: dbRegion,
