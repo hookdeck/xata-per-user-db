@@ -1,4 +1,4 @@
-# Per User Database Creation with Xata, Clerk, and Hookdeck
+# Per User Database Creation with Xata, Clerk, Hookdeck, and Next.js
 
 This Next.js example demonstrates how to create a database within [Xata](https://xata.io) per user within a Xata Workspace whenever a new user is created within [Clerk](https://clerk.com/). [Hookdeck](https://hookdeck.com?ref=github-xata) is used to manage inbound webhooks.
 
