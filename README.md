@@ -25,7 +25,7 @@ hookdeck login
 ## Get the code
 
 ```sh
-npx create-next-app xata-per-user-db -e https://github.com/leggetter/xata-per-user-db
+npx create-next-app xata-per-user-db -e https://github.com/hookdeck/xata-per-user-db
 ```
 
 ## Create the config
