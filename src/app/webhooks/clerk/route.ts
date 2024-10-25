@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     let dbRegion = "us-east-1";
     try {
       const ipLookupResponse = await fetch(
-        `http://ip-api.com/json/${event.event_attributes.http_request.client_ip}`
+        `http://ip-api.com/json/${event.event_attributes.http_request.client_ip}?fields=continentCode`
       );
       const ipLookupData = await ipLookupResponse.json();
 
@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("User DB created", createResult.databaseName);
+    console.log("In region:", dbRegion);
 
     return NextResponse.json(createResult);
   } catch (error) {

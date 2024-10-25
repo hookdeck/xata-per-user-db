@@ -522,6 +522,8 @@ And that's it! Every time a new user is created in Clerk, triggered by a new use
 
 As mentioned, one of the use cases for creating a database per-user is to enable the data to be hosted in a specific region for data privacy or security reasons. So, here's an example of changing the database region based on an IP address lookup using the location the user signed up from. In a real world scenario, you'd ask the user where they want to host their data either during of after signup.
 
+Update the `POST` function in `src/app/webhooks/clerk/route.ts`:
+
 ```ts
 export async function POST(request: NextRequest) {
   try {
@@ -564,7 +566,7 @@ export async function POST(request: NextRequest) {
     let dbRegion = "us-east-1";
     try {
       const ipLookupResponse = await fetch(
-        `http://ip-api.com/json/${event.event_attributes.http_request.client_ip}`
+        `http://ip-api.com/json/${event.event_attributes.http_request.client_ip}?fields=continentCode`
       );
       const ipLookupData = await ipLookupResponse.json();
 
@@ -591,6 +593,7 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("User DB created:", createResult.databaseName);
+    console.log("In region:", dbRegion);
 
     return NextResponse.json(createResult);
   } catch (error) {
@@ -602,19 +605,21 @@ export async function POST(request: NextRequest) {
 
 This example defaults to using the `us-east-1` region, but also performs an IP address lookup to determine a region closer to their location when they signed up.
 
-It uses [ip-api](http://ip-api.com) which is free for non-commercial use and handily returns a `continentCode` which can use to determine the region where the database instance created.
+It uses [ip-api](http://ip-api.com) which is free for non-commercial use and can handily returns a `continentCode` which is used to determine the region where the database instance is created.
+
+Note: The free version of ip-api uses an unsecured HTTP request for IP lookup.
 
 ## Conclusion
 
-In this tutorial, you have learned the benefits and use cases of a per-user database architecture, particularly in scenarios requiring data isolation, security, and compliance.
+In this tutorial, you learned the benefits and use cases of a per-user database architecture, particularly in scenarios requiring data isolation, security, and compliance.
 
-You have also walked through the steps to set up a Next.js application integrated with Clerk for user management, Hookdeck for local development and reliable webhook handling, and Xata for database management.
+You also walked through the steps to set up a Next.js application integrated with Clerk for user management, Hookdeck for local webhook development and overall reliable webhook handling, and Xata for database services where Xata makes the process of creating a per-user database simple and lightweight.
 
-You have configured Clerk webhooks to trigger a per-user database to be created within Xata for each new user. Additionally, you explored how to customize database creation based on user location. Xata makes the process of creating a per-user database simple and lightweight.
+You configured Clerk webhooks to trigger a per-user database to be created within Xata for each new user. Additionally, you explored how to customize database region creation based on user location.
 
 ## More information
 
-- [Per-user database with Clerk, Xata, and Hookdeck GitHub repo]()
+- [Per-user database with Clerk, Xata, and Hookdeck GitHub repo](https://github.com/hookdeck/xata-per-user-db)
 - [Clerk docs](https://clerk.dev/docs)
 - [Xata docs](https://xata.io/docs)
 - [Hookdeck docs](https://hookdeck.com/docs?ref=xata-user-db)
