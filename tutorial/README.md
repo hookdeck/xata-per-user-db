@@ -1,12 +1,12 @@
 # Per-User Database Architecture with Xata, Clerk, Hookdeck, and Next.js
 
-When building an application you often think of having a database with a table named `users` and then throughout your database schema you have references to `users` that represent the owner of a row in each referencing table. This works in many cases. However, there are a growing number of use cases where there is a need to have a database instance per-user. For example, where there is a need for data isolation for security or compliance, and to maximize database access times. Also, when you think about it, this removes a lot of the complexity that comes from all those `users` references.
+When building an application you often think of having a database with a table named `users` and then throughout your database schema you have references to `users` for the owner of a row in each referencing table. This works in many cases. However, in addition to it becoming much easier to creating a new database instance, there are a growing number of use cases where there is a need to have a database instance per-user. For example, where there is a need for data isolation for security or compliance, and to maximize database access times. Also, when you think about it, this removes a lot of the complexity that comes from all those `users` references.
 
-In this tutorial, you'll learn of some uses cases where a per-user database architecture makes sense and then walk through how to create a new Xata database per-user whenever a new user is created in [Clerk](https://clerk.com) using Clerk webhook notifications with the [Hookdeck event gateway](https://hookdeck.com?ref=xata-user-db) to help both during development with localhost webhook tooling and in production to secure the webhooks and guarantee at-least-once delivery. You'll build the app in Next.js.
+In this tutorial, you'll learn of some uses cases where a per-user database architecture makes sense and then walk through how to create a new Xata database per-user whenever a new user is created in [Clerk](https://clerk.com), a user auth and management service, using Clerk webhook notifications. You'll use the [Hookdeck event gateway](https://hookdeck.com?ref=xata-user-db) to help both during development with localhost webhook tooling and in production to secure the webhooks and guarantee at-least-once delivery. You'll build the app in Next.js.
 
 ## The use cases for a per-user database architecture
 
-As mentioned, a per-user database architecture is often required to guarantee data isolation which enables security and compliance considerations such as access control and data residency. The location of the database can also improve data access performance.
+As mentioned, a per-user database architecture is often required to guarantee data isolation which satisfies security and compliance considerations such as access control and data residency. The location of the database can also improve data access performance.
 
 Here are some concrete examples of where a per-user or per-device database makes sense:
 
@@ -15,8 +15,6 @@ Here are some concrete examples of where a per-user or per-device database makes
 - **Healthcare Systems**: Per-user databases can securely store sensitive patient data, ensuring compliance with privacy regulations like HIPAA. This approach allows for personalized care and easy retrieval of patient records.
 
 - **Financial Services**: Online banking and fintech platforms can benefit from per-user databases by securely managing individual financial data. This setup enhances security and simplifies the process of auditing and compliance
-
-- **E-commerce Platforms**: Each customer can have a separate database to manage their order history, preferences, and personal information. This helps in providing personalized shopping experiences and targeted marketing.
 
 - **Social Media Applications**: Per-user databases can handle vast amounts of unstructured data, such as posts and interactions, while maintaining user privacy and providing personalized content feeds.
 
