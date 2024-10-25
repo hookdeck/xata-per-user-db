@@ -210,13 +210,24 @@ Head to localhost:3000 and click on the **Sign In** and ensure you go to the Cle
 
 Next, create a webhook handler route to be used to handle the Clerk webhook when a new user is created.
 
+Go to the [Hookdeck Dashboard](https://dashboard.hookdeck.com?ref=xata-user-db). In the **Settings** section of your Hookdeck project, go to **Secrets**, and copy the **Signing Secret** value. Add it to a `HOOKDECK_WEBHOOK_SECRET` variable in your `.env.local`:
+
+```diff
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
+CLERK_SECRET_KEY=...
++
++ HOOKDECK_WEBHOOK_SECRET=...
+```
+
+Note: If you are new to Hookdeck your project will be called **Default Project**. See the [Hookdeck Project docs](https://hookdeck.com/docs/projects?ref=xata-user-db) for more information.
+
 Install the Hookdeck SDK to be used to verify the webhook:
 
 ```sh
 npm i @hookdeck/sdk
 ```
 
-Create a file `app/webhooks/clerk/route.ts`:
+Create a file `src/app/webhooks/clerk/route.ts`:
 
 ```ts
 import { NextRequest, NextResponse } from "next/server";
@@ -265,25 +276,27 @@ In additional to the Next.js classes, import `verifyWebhookSignature` from `@hoo
 
 Next, retrieve the `HOOKDECK_WEBHOOK_SECRET` from your environment variables. This secret is used to verify the webhook came from Hookdeck. If the secret is not set, log an error message and exit the process to prevent the server from running without the necessary configuration.
 
-Now, define an asynchronous function named `POST` to handle incoming `POST` requests. Inside this function, populate the `headers` variable with key-value pairs of request headers.
+Now, define an asynchronous function named `POST` to handle incoming **POST** requests. Inside this function, populate the `headers` variable with key-value pairs of request headers.
 
 Read the raw body of the request using await `request.text()`.
 
 Use the `verifyWebhookSignature` function to verify the webhook signature. Pass the `headers`, `rawBody`, and the `HOOKDECK_WEBHOOK_SECRET` to this function. If the signature is invalid, log an error message and return a `401` response with an error message indicating an invalid signature.
 
-If the signature is valid, parse the raw body to extract the event data (you need to do this rather than use `request.json()` as the request stream may have closed). Log the received event for debugging purposes.
+If the signature is valid, parse the raw body to extract the event data (you need to do this rather than use `request.json()` as the request stream may have closed when calling `request.text()`). Log the received event for debugging purposes.
 
 Finally, return the event data as a JSON response. If any errors occur during the process, catch them, log the error, and return a `500` response with the error message.
 
-Not that all responses go back to Hookdeck and not to Clerk.
+Note: All responses from your Next.js application go back to Hookdeck and not to Clerk.
 
 #### Create a localtunnel with the Hookdeck CLI
 
-Set up a localtunnel and Hookdeck connection to the webhook route:
+Set up a localtunnel and Hookdeck connection to the webhook route to receive webhooks events on in your local development environment:
 
 ```sh
 hookdeck listen 3000 clerk --path /webhooks/clerk
 ```
+
+Note: If you already have a Hookdeck account, use `hookdeck project use` to select the Hookdeck project you are using for this app.
 
 Note: A path (`/webhooks/clerk`) can also be defined when creating a localtunnel with the Hookdeck CLI, which is different to the approach taken by other tools such as ngrok.
 
@@ -306,9 +319,9 @@ Copy the **clerk URL** value that is output.
 
 #### Configure Clerk webhooks
 
-Head to the Clerk Dashboard and go to the **Webhooks** section.
+Head to the Clerk Dashboard and go to the **Configure** -> **Webhooks** section.
 
-Click **+ Add Endpoint** and enter the Hookdeck URL you copied in the previous step. You can ignore the **Subscribe** to event section and in doing so effectively subscribe to all events. We'll do the event filtering within Hookdeck. Click **Create** to create the webhook subscription.
+Click **+ Add Endpoint** and enter the Hookdeck URL you copied in the previous step. You can ignore the **Subscribe to events** section and in doing so effectively subscribe to all events. We'll do the event filtering within Hookdeck. Click **Create** to create the webhook subscription.
 
 In the following screen, copy the **Signing Secret**.
 
@@ -316,7 +329,7 @@ In the following screen, copy the **Signing Secret**.
 
 #### Verify the Clerk webhook within Hookdeck
 
-Hookdeck can verify webhooks from number providers and also supports various common webhook verification standards. This allows you to offload the effort of maintaining a variety of webhook verification methods, enabling you to have one standard of webhook verification from Hookdeck within your codebase.
+Hookdeck can verify webhooks from number providers and also supports common webhook verification standards. This allows you to offload the effort of maintaining a variety of webhook verification methods, resulting in the need for a single standard of webhook verification from Hookdeck within your codebase.
 
 Go to the [Hookdeck Dashboard](https://dashboard.hookdeck.com?ref=xata-user-db), click on **Connections**. Click on the visual representation of the Clerk Source named `clerk` to open the dialog. Click **Open Source**.
 
@@ -341,7 +354,7 @@ Go back to the Hookdeck Dashboard, go to the **Events** section, and ensure the 
 
 ![Hookdeck Events view](./hookdeck-events-view.png)
 
-Note: Hookdeck has the concept of Requests which then generate Events. Read more about [Hookdeck Concepts](https://hookdeck.com/docs/hookdeck-basics?ref=xata-user-db#concepts).
+Note: Hookdeck has the concept of Requests which then generate Events. Read more about the [Hookdeck Concepts](https://hookdeck.com/docs/hookdeck-basics?ref=xata-user-db#concepts).
 
 #### Filter Clerk webhooks with Hookdeck Filters
 
@@ -367,20 +380,26 @@ This filter ensures that only webhooks events with a `type` property that has a 
 
 Test by creating a new user and checking which events reach your app.
 
+Hint: You can use sub-addressing with your email to create multiple accounts with Clerk. For example, you can use phil@example.com and phil+test1@example.com.
+
 ### Add Xata to the Next.js application
 
-Go to the your [Xata workspaces](https://app.xata.io/workspaces) and ensure you are within the correct workspace. Go to the **Settings** section and get your API Key and **Workspace slug**.
+Go to your [Xata workspaces](https://app.xata.io/workspaces) and ensure you are within the correct workspace. Go to the **Settings** section and get your API Key and **Workspace slug**.
 
-Also, go to the **Account Settings** section from the menu under your avatar. Scroll to the **Personal API keys** section, click **+ Add a key** and enter `per-user-db-app`, and click **Save**. Copy the newly created API key.
+Note: If you are prompted to create a new database, skip that step by clicking the **Skip connection guide** link.
+
+Also, go to the **Account settings** section from the menu under your avatar. Scroll to the **Personal API keys** section, click **+ Add a key** and enter `per-user-db-app`, and click **Save**. Copy the newly created API key.
 
 Save the **Workspace slug** value as `XATA_WORKSPACE_SLUG` and the Xata API key as `XATA_API_KEY` in your `.env.local` file:
 
 ```diff
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
 CLERK_SECRET_KEY=...
+
+HOOKDECK_WEBHOOK_SECRET=...
 +
-+ XATA_API_KEY=...
 + XATA_WORKSPACE_SLUG=...
++ XATA_API_KEY=...
 ```
 
 Install the Xata TypeScript client:
@@ -409,6 +428,8 @@ const XATA_WORKSPACE_SLUG = process.env.XATA_WORKSPACE_SLUG;
 const xata = new XataApiClient({
   apiKey: XATA_API_KEY,
 });
+
+...
 ```
 
 ### Create a new Xata database per-user
@@ -448,7 +469,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log("Created DB", createResult.databaseName);
+    console.log("User DB created:", createResult.databaseName);
 
     return NextResponse.json(createResult);
   } catch (error) {
@@ -462,7 +483,7 @@ With the Xata client in place, retrieve the list of existing databases in your X
 
 The `event.data.id` is the ID of the user in Clerk, so this is a good value to use when creating a database.
 
-First, check if a database with the same Clerk user ID already exists by using the find method on the `dbList.databases` array. If a database with the same name is found, log a message indicating that the user database already exists and return a 200 response with a message. This indicates to Hookdeck that the event is processed, and Hookdeck will not retry the webhook.
+First, check if a database with the same Clerk user ID already exists by using the `find` method on the `dbList.databases` array. If a database with the same name is found, log a message indicating that the user database already exists and return a 200 response with a message. This indicates to Hookdeck that the event is processed, and Hookdeck will not retry the webhook.
 
 If the database does not already exist, create a new database by calling `xata.databases.createDatabase`. Pass the `dbName` and `workspaceId` as path parameters, and for the moment hard code the database region to `us-east-1`.
 
@@ -484,9 +505,11 @@ The following message will be logged to indicate the database is created:
 User DB created: user_{id}
 ```
 
-Head to the Xata dashboard and check the database was created.
+Head your Xata workspace and check the database was created.
 
-Replay the `user.created` event again in Hookdeck and ensure that the `User DB already exists` message is logged.
+![Xata workspace with single DB](./xata-workspace-db.png)
+
+Replay the `user.created` event again via the Hookdeck Dashboard and ensure that the `User DB already exists` message is logged.
 
 ```sh
 User DB already exists: user_{id}
@@ -494,8 +517,6 @@ User DB already exists: user_{id}
 ```
 
 And that's it! Every time a new user is created in Clerk, triggered by a new user sign up, a new per-user database is created in Xata.
-
-You can test further by deleting both the database in Xata and the user in Clerk, and going through the sign up process again within your application.
 
 ## Example: Regional database creation
 
@@ -569,7 +590,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log("Created DB", createResult.databaseName);
+    console.log("User DB created:", createResult.databaseName);
 
     return NextResponse.json(createResult);
   } catch (error) {
