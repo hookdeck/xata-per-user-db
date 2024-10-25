@@ -71,6 +71,18 @@ Run the following and accept all defaults:
 npx create-next-app@latest xata-per-user-db
 ```
 
+When prompted, answer the questions as follows:
+
+```sh
+✔ Would you like to use TypeScript? … Yes
+✔ Would you like to use ESLint? … Yes
+✔ Would you like to use Tailwind CSS? … No
+✔ Would you like your code inside a `src/` directory? … Yes
+✔ Would you like to use App Router? (recommended) … Yes
+✔ Would you like to use Turbopack for next dev? … No
+✔ Would you like to customize the import alias (@/* by default)? … No
+```
+
 Navigate to the new app directory:
 
 ```sh
@@ -87,14 +99,16 @@ Install the [Clerk Next.js package](https://clerk.com/docs/references/nextjs/ove
 npm install @clerk/nextjs
 ```
 
-Go to the [Clerk dashboard](https://dashboard.clerk.com/), and head to the **Configure** section. Then click on **API keys** under the **Developers** heading. Copy the **Publishable key** and **Secret key -> default** values and add them to a new `.env.local` file within your application:
+Go to the [Clerk dashboard](https://dashboard.clerk.com/) and create a new Clerk application. Choose Email and any other sign in options you like.
+
+Next, head to the **Configure** section. Then click on **API keys** under the **Developers** heading. Copy the **Publishable key** and **Secret key -> default** values and add them to a new `.env.local` file within your application:
 
 ```
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
 CLERK_SECRET_KEY=...
 ```
 
-Next, add the Clerk middleware. If you're using a `src` directory it does in there, otherwise in the root directory of your project:
+Next, add the Clerk middleware. Create a `src/middleware.ts` file as follows:
 
 ```ts
 import { clerkMiddleware } from "@clerk/nextjs/server";
@@ -111,12 +125,13 @@ export const config = {
 };
 ```
 
-Update `layout.tsx` to the following:
+Update `src/app/layout.tsx` to the following:
 
 ```tsx
 import {
   ClerkProvider,
   SignInButton,
+  SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
@@ -151,7 +166,7 @@ export default function RootLayout({
 
 This adds the Clerk provided sign in and sign out functionality.
 
-Add the following to `global.css` to improve the button styling a little:
+Add the following to `src/app/global.css` to improve the button styling a little:
 
 ```css
 header {
